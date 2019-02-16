@@ -184,6 +184,7 @@ angular.module('ui.bootstrap-slider', [])
                         slide: 'onSlide',
                         slideStop: 'onStopSlide'
                     };
+                    // FIXME: should be attrs['onStartSlide'] and slider.on('slideStart', callback)
                     angular.forEach(sliderEvents, function (sliderEventAttr, sliderEvent) {
                         var fn = $parse(attrs[sliderEventAttr]);
                         slider.on(sliderEvent, function (ev) {
