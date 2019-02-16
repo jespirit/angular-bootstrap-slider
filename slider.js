@@ -170,6 +170,12 @@ angular.module('ui.bootstrap-slider', [])
                     }
                     angular.forEach(updateEvent, function (sliderEvent) {
                         slider.on(sliderEvent, function (ev) {
+                            /* $setViewValue() should be called when you want to change the view value
+                             * Note, however, it does not call `$render()` or change the control's DOM value.
+                             * Note: This only seems to make sense when applying the `slider` directive
+                             * as an attribute to a <div> or <span> which actually has a view value and not
+                             * when the directive is applied as an element.
+                             */
                             ngModelCtrl.$setViewValue(ev);
                         });
                     });
