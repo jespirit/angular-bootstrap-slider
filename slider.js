@@ -155,6 +155,7 @@ angular.module('ui.bootstrap-slider', [])
                     element[0].__slider = slider;
 
                     // everything that needs slider element
+                    // FIXME: if updateEvent is an array, then it will default to ['slide']
                     var updateEvent = getArrayOrValue(attrs.updateevent);
                     if (angular.isString(updateEvent)) {
                         // if only single event name in string
