@@ -61,6 +61,9 @@ angular.module('ui.bootstrap-slider', [])
                         return (angular.isString(value) && value.indexOf("[") === 0) ? angular.fromJson(value) : value;
                     }
 
+                    /* Attributes that are not listed as part of the scope are
+                     *  input bindings and not two-way bindings.
+                     */
                     setOption('id', $scope.sliderid);
                     setOption('orientation', attrs.orientation, 'horizontal');
                     setOption('selection', attrs.selection, 'before');
@@ -129,6 +132,10 @@ angular.module('ui.bootstrap-slider', [])
                         }
                     }
 
+                    // Commit: https://github.com/jespirit/angular-bootstrap-slider/commit/c75d723daa4638a103934096f3243594cddd25dd
+                    // git log -p --follow -G "picker" -- src/js/bootstrap-slider.js
+                    // `picker` is legacy code removed in v4.0.0
+                    // You need to go back to v3.0.0 to see the picker being used
                     // check if slider jQuery plugin exists
                     if (typeof window.$ !== 'undefined' && typeof $.fn === 'object' && $.fn.slider) {
                         // adding methods to jQuery slider plugin prototype
@@ -224,6 +231,12 @@ angular.module('ui.bootstrap-slider', [])
                 var globalEvents = ['relayout', 'refresh', 'resize'];
                 angular.forEach(globalEvents, function(event) {
                     if(angular.isFunction(slider[event])) {
+                        /* $on() is a method of $scope object
+                           Events: slider:relayout, slider:refresh, slider:resize
+                           Listen for these events and call the appropriate event handler.
+
+                           Reference: https://stackoverflow.com/questions/28800426/what-is-on-in-angularjs
+                         */
                         $scope.$on('slider:' + event, function () {
                             slider[event]();
                         });
