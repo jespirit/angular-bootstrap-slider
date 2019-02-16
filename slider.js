@@ -140,6 +140,9 @@ angular.module('ui.bootstrap-slider', [])
                     if (typeof window.$ !== 'undefined' && typeof $.fn === 'object' && $.fn.slider) {
                         // adding methods to jQuery slider plugin prototype
                         $.fn.slider.constructor.prototype.disable = function () {
+                            /* FIXME: If `picker` is a jQuery object, then what does calling
+                             * `off()` or `on()` with no arguments actually do?
+                             */
                             this.picker.off();
                         };
                         $.fn.slider.constructor.prototype.enable = function () {
