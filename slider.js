@@ -179,6 +179,7 @@ angular.module('ui.bootstrap-slider', [])
                             ngModelCtrl.$setViewValue(ev);
                         });
                     });
+                    // Write data to the model via the ngModelController
                     slider.on('change', function (ev) {
                         ngModelCtrl.$setViewValue(ev.newValue);
                     });
@@ -191,11 +192,20 @@ angular.module('ui.bootstrap-slider', [])
                         slideStop: 'onStopSlide'
                     };
                     // FIXME: should be attrs['onStartSlide'] and slider.on('slideStart', callback)
+                    // angular.forEach(object|array, function(key, value, obj))
                     angular.forEach(sliderEvents, function (sliderEventAttr, sliderEvent) {
+                        /* $parse(expression)
+                         * @returns function(context, locals)
+                         * <slider on-start-slide="status='started'"></slider>
+                         * $parse("status='started'") -> fn(context) -> context.status = 'started'
+                         */
                         var fn = $parse(attrs[sliderEventAttr]);
                         slider.on(sliderEvent, function (ev) {
+                            // slide, slideStart, slideStop events pass the new slider value
                             if ($scope[sliderEventAttr]) {
                                 $scope.$apply(function () {
+                                    // The directive declares a new isolate scope and uses $parent
+                                    // to reference the parent scope to execute the function.
                                     fn($scope.$parent, { $event: ev, value: ev });
                                 });
                             }
@@ -218,7 +228,19 @@ angular.module('ui.bootstrap-slider', [])
                     });
 
                     // deregister ngModel watcher to prevent memory leaks
+                    // Note: Just call the deregistration function returned by $watch()
+                    // to deregister the $watcher
+                    // Note: All watches will be removed when the scope is destroyed
                     if (angular.isFunction(ngModelDeregisterFn)) ngModelDeregisterFn();
+
+                    /* $watch(watchExpression, listener, [objectEquality])
+                     * listener: function(newVal, oldVal, scope)
+                     * `scope` is the current scope
+                     * @returns deregistration function for the listener
+                     *  
+                     * if `objectEquality` is true, then use angular.equals() for comparing
+                     * versus strict compariosn via `!==` operator
+                     */
                     ngModelDeregisterFn = $scope.$watch('ngModel', function (value) {
                         if($scope.range){
                             slider.setValue(value);
