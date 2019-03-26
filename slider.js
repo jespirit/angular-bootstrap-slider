@@ -199,14 +199,14 @@ angular.module('ui.bootstrap-slider', [])
                          * <slider on-start-slide="status='started'"></slider>
                          * $parse("status='started'") -> fn(context) -> context.status = 'started'
                          */
-                        var fn = $parse(attrs[sliderEventAttr]);
+                        var fn = $parse(attrs[sliderEventAttr]);  // getter(context, locals)
                         slider.on(sliderEvent, function (ev) {
                             // slide, slideStart, slideStop events pass the new slider value
                             if ($scope[sliderEventAttr]) {
-                                $scope.$apply(function () {
+                                $scope.$apply(function (scope) {
                                     // The directive declares a new isolate scope and uses $parent
                                     // to reference the parent scope to execute the function.
-                                    fn($scope.$parent, { $event: ev, value: ev });
+                                    fn(scope, { $event: ev, value: ev });
                                 });
                             }
                         });
